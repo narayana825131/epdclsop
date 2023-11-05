@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+
+	<Properties>
+		<Property name="LOG_PATTERN">%d{dd-MM-yyyy HH:mm:ss} %-5p %c{1}:%L - %m%n</Property>
+		<Property name="FILE_NAME_PATTERN"> %d{dd-MM-yyyy}</Property>
+		<Property name="CRON_TRIGGERING_POLICY">0 */6 * * * ?</Property>
+		<Property name="APP_LOG_ROOT">/intrapps/Applications/epdcl_sop/Applogs</Property>
+<!-- 		 <Property name="APP_LOG_ROOT">F:/LOGS/SOP_logs</Property>  -->
+    </Properties>
+
+
+	<Appenders>
+		<Console name="LogToConsole" target="SYSTEM_OUT" follow="true">
+			<PatternLayout pattern="%d{dd-MM-yyyy HH:mm:ss} - [%t] %highlight{%level}{FATAL=bg_red, ERROR=red, WARN=yellow, INFO=green, DEBUG=blue}%-5p %c{1}:%L - %msg%n" />
+		</Console>
+		
+		<File name="LogToFile" fileName="${APP_LOG_ROOT}/${date:yyyy-MM-dd}/sop-${date:yyyy-MM-dd}.log">
+            <PatternLayout pattern="%d{dd-MM-yyyy HH:mm:ss} %-5p %c{1}:%L - %m%n" />
+        </File>
+
+		<!-- File Appenders on need basis -->
+		
+		<RollingFile name="debugLog" fileName="${APP_LOG_ROOT}/${date:yyyy-MM-dd}/sop-debug-${date:yyyy-MM-dd}.log" filePattern="${APP_LOG_ROOT}/${date:yyyy-MM-dd}/DEBUG-LOG-BKP-$${date:yyyy-MM-dd}/epccb-debug-%d{yyyy-MM-dd}-%i.log" ignoreExceptions="false">
+    		<LevelRangeFilter minLevel="DEBUG" maxLevel="DEBUG" onMatch="ACCEPT" onMismatch="DENY" />
+    		<PatternLayout pattern="${LOG_PATTERN}" />
+    		<Policies>
+        		<TimeBasedTriggeringPolicy />
+        		<CronTriggeringPolicy schedule="${CRON_TRIGGERING_POLICY}" evaluateOnStartup="true"/>
+    		</Policies>
+    		<DefaultRolloverStrategy max="10" />
+		</RollingFile>
+
+		<RollingFile name="infoLog"
+			fileName="${APP_LOG_ROOT}/${date:yyyy-MM-dd}/sop-info-${date:yyyy-MM-dd}.log" filePattern="${APP_LOG_ROOT}/${date:yyyy-MM-dd}/INFO-LOG-BKP-$${date:yyyy-MM-dd}/epccb-info-%d{yyyy-MM-dd}-%i.log" ignoreExceptions="false">
+			<LevelRangeFilter minLevel="INFO" maxLevel="INFO" onMatch="ACCEPT" onMismatch="DENY" />
+			<PatternLayout pattern="${LOG_PATTERN}" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<CronTriggeringPolicy schedule="${CRON_TRIGGERING_POLICY}" evaluateOnStartup="true" />
+			</Policies>
+			<DefaultRolloverStrategy max="10" />
+		</RollingFile>
+
+		<RollingFile name="errorLog"
+			fileName="${APP_LOG_ROOT}/${date:yyyy-MM-dd}/sop-error-${date:yyyy-MM-dd}.log" filePattern="${APP_LOG_ROOT}/${date:yyyy-MM-dd}/ERROR-LOG-BKP-$${date:yyyy-MM-dd}/epccb-error-%d{yyyy-MM-dd}-%i.log" ignoreExceptions="false">
+			<LevelRangeFilter minLevel="ERROR" maxLevel="ERROR" onMatch="ACCEPT" onMismatch="DENY" />
+			<PatternLayout pattern="${LOG_PATTERN}" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<CronTriggeringPolicy schedule="${CRON_TRIGGERING_POLICY}" evaluateOnStartup="true" />
+			</Policies>
+			<DefaultRolloverStrategy max="10" />
+		</RollingFile>
+
+	</Appenders>
+	<Loggers>
+		<Logger name="com.epdcl.apepdclsop" additivity="false" level="trace">
+			<AppenderRef ref="debugLog" />
+			<AppenderRef ref="infoLog" />
+			<AppenderRef ref="errorLog" />
+			<AppenderRef ref="LogToConsole" />
+			<AppenderRef ref="LogToFile" /> 
+		</Logger>
+		<Logger name="com.epdcl.apepdclsop" additivity="false" level="debug">
+			<AppenderRef ref="debugLog" />
+			<AppenderRef ref="infoLog" />
+			<AppenderRef ref="errorLog" />
+			<AppenderRef ref="LogToConsole" />
+			<AppenderRef ref="LogToFile" /> 
+		</Logger>
+		<Root level="error">
+			<AppenderRef ref="debugLog" />
+			<AppenderRef ref="infoLog" />
+			<AppenderRef ref="errorLog" />
+			<AppenderRef ref="LogToConsole" />
+			<AppenderRef ref="LogToFile" /> 
+		</Root>
+	</Loggers>
+
+</Configuration>
